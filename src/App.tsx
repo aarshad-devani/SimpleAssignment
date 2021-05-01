@@ -46,7 +46,6 @@ export default function App() {
 
     adjacentCoordinates.forEach((matrix) => {
       const adjacentBoxRef = GetBoxRef(`${matrix.x}-${matrix.y}`);
-      console.log("ref", adjacentBoxRef);
       adjacentBoxRef && adjacentBoxRef.setColor && adjacentBoxRef.setColor(newColor);
     });
   };
