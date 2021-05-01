@@ -30,6 +30,7 @@ const Box = forwardRef<ColorableRef, BoxProps>(
 
     return (
       <div style={{ width, height, backgroundColor }} onClick={onBoxClick}>
+        <p>{boxNumber}</p>
         {children}
       </div>
     );
