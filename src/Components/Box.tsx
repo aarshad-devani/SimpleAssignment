@@ -4,26 +4,55 @@ import { GetRandomColor } from "../Utils";
 interface BoxProps {
   height: number;
   width: number;
+  boxNumber?: number;
   onBoxClick: () => void;
 }
 
-export const Box: React.FC<BoxProps> = forwardRef((props, ref) => {
-  const [backgroundColor, setBackgroundColor] = useState<string>(GetRandomColor());
+interface ColorableRef {
+  changeColor: () => void;
+}
 
-  const BoxClick = () => {
-    setBackgroundColor(GetRandomColor());
-    props.onBoxClick();
-  };
+const Box = forwardRef<ColorableRef, BoxProps>(
+  ({ height, width, children, boxNumber, onBoxClick }, ref) => {
+    const [backgroundColor, setBackgroundColor] = useState<string>(GetRandomColor());
 
-  useImperativeHandle(ref, () => ({
-    changeColor: BoxClick,
-  }));
+    const ChangeBoxColor = () => {
+      const newColor = GetRandomColor();
+      console.debug("Changing Color of box", boxNumber);
+      console.debug("Existing Color", backgroundColor);
+      console.debug("newColor", newColor);
+      setBackgroundColor(newColor);
+    };
 
-  return (
-    <div style={{ width: props.width, height: props.height, backgroundColor }} onClick={BoxClick}>
-      {props.children}
-    </div>
-  );
-});
+    useImperativeHandle(ref, () => ({
+      changeColor: ChangeBoxColor,
+    }));
 
-export default React.memo(Box);
+    return (
+      <div style={{ width, height, backgroundColor }} onClick={onBoxClick}>
+        {children}
+      </div>
+    );
+  }
+);
+
+// export const Box: React.FC<BoxProps> = (props, ref) => {
+//   const [backgroundColor, setBackgroundColor] = useState<string>(GetRandomColor());
+
+//   const BoxClick = () => {
+//     setBackgroundColor(GetRandomColor());
+//     props.onBoxClick();
+//   };
+
+//   useImperativeHandle(ref, () => ({
+//     changeColor: BoxClick,
+//   }));
+
+//   return (
+//     <div style={{ width: props.width, height: props.height, backgroundColor }} onClick={BoxClick}>
+//       {props.children}
+//     </div>
+//   );
+// };
+
+export default Box;
