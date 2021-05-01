@@ -41,7 +41,7 @@ export const BoxForm: React.FC<BoxFormProps> = (props) => {
       <span>Box Size : </span>
       <input
         id="boxSize"
-        defaultValue={10}
+        defaultValue={100}
         type="number"
         placeholder="No of Boxes in column"
         {...register("boxSize")}

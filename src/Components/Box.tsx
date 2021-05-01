@@ -10,6 +10,7 @@ interface BoxProps {
 
 interface ColorableRef {
   changeColor: () => void;
+  setColor: (color: string) => void;
 }
 
 const Box = forwardRef<ColorableRef, BoxProps>(
@@ -18,14 +19,18 @@ const Box = forwardRef<ColorableRef, BoxProps>(
 
     const ChangeBoxColor = () => {
       const newColor = GetRandomColor();
-      console.debug("Changing Color of box", boxNumber);
+      console.log("Changing Color of box", boxNumber);
       console.debug("Existing Color", backgroundColor);
       console.debug("newColor", newColor);
       setBackgroundColor(newColor);
+      return newColor;
     };
 
     useImperativeHandle(ref, () => ({
       changeColor: ChangeBoxColor,
+      setColor: (color: string) => {
+        setBackgroundColor(color || GetRandomColor());
+      },
     }));
 
     return (

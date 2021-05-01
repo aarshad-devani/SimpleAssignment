@@ -1,45 +1,83 @@
 import React, { useRef, useState } from "react";
 import Box from "./Components/Box";
-import BoxForm, { FormData } from "./Components/BoxForm";
-import { GetAdjacentBoxes } from "./Utils";
+import { FormData } from "./Components/BoxForm";
+import { GetAdjacentMatrices, useWindowSize, GetVectorCoordinate } from "./Utils";
 import "./App.css";
 
-const BOX_HEIGHT = 100;
-const BOX_WIDTH = 100;
-const BOXES = 100;
+const BOX_SIZE = 100;
 
 export default function App() {
-  const [boxNumber] = useState<number>(BOXES);
-  const boxRefs = useRef<any[]>([]);
+  const { width, height } = useWindowSize();
+  const [formInformation] = useState<FormData>({
+    boxSize: BOX_SIZE.toString(),
+    dynamic: false,
+    noOfRowBoxes: "10",
+    noOfColumnBoxes: "10",
+  });
+  const possibleBoxesInWidth = formInformation.dynamic
+    ? Math.floor(width / Number(formInformation.boxSize))
+    : Number(formInformation.noOfRowBoxes);
+  const possibleBoxesInHeight = formInformation.dynamic
+    ? Math.floor(height / Number(formInformation.boxSize))
+    : Number(formInformation.noOfColumnBoxes);
 
-  const GetBoxRef = (boxNumber: number) => boxRefs.current[boxNumber];
+  const possibleBoxes = possibleBoxesInHeight * possibleBoxesInWidth;
+  const boxRefs = useRef<any>({});
+  boxRefs.current = {};
+
+  const GetBoxRef = (boxNumber: string) => boxRefs.current[boxNumber];
   const onBoxClick = (boxNumber: number) => {
-    GetAdjacentBoxes(boxNumber, 10, 10);
     console.log("Box Clicked", boxNumber);
-    const currentBox = GetBoxRef(boxNumber);
-    const adjacentBoxRef = GetBoxRef(boxNumber + 1);
+    console.log("allRefs", boxRefs.current);
+    const vectorCoordinate = GetVectorCoordinate(
+      boxNumber,
+      possibleBoxesInWidth,
+      possibleBoxesInHeight
+    );
+    const adjacentCoordinates = GetAdjacentMatrices(
+      boxNumber,
+      possibleBoxesInWidth,
+      possibleBoxesInHeight
+    );
+    const currentBox = GetBoxRef(`${vectorCoordinate.x}-${vectorCoordinate.y}`);
+    const newColor = currentBox && currentBox.changeColor && currentBox.changeColor();
 
-    currentBox && currentBox.changeColor && currentBox.changeColor();
-    adjacentBoxRef && adjacentBoxRef.changeColor && adjacentBoxRef.changeColor();
+    console.log("currentVector", vectorCoordinate);
+    console.log("adjacent", adjacentCoordinates);
+
+    adjacentCoordinates.forEach((matrix) => {
+      const adjacentBoxRef = GetBoxRef(`${matrix.x}-${matrix.y}`);
+      console.log("ref", adjacentBoxRef);
+      adjacentBoxRef && adjacentBoxRef.setColor && adjacentBoxRef.setColor(newColor);
+    });
   };
 
   return (
     <div className="full-Box">
-      <div className="formBox">
+      {/* <div className="formBox">
         <BoxForm
           onFormSubmit={(data) => {
+            setFormInformation(data);
             console.log(data);
           }}
         />
-      </div>
-      {[...Array(boxNumber).keys()].map((x: number) => {
-        const getRef = (element: any) => boxRefs.current.push(element);
+      </div> */}
+      {[...Array(possibleBoxes).keys()].map((x: number) => {
+        const vectorCoordinate = GetVectorCoordinate(
+          x,
+          possibleBoxesInWidth,
+          possibleBoxesInHeight
+        );
+        const vectorString = `${vectorCoordinate.x}-${vectorCoordinate.y}`;
+
         return (
           <Box
-            ref={getRef}
+            ref={(ele) => {
+              boxRefs.current[vectorString] = ele;
+            }}
             key={x}
-            height={BOX_HEIGHT}
-            width={BOX_WIDTH}
+            height={Number(formInformation.boxSize)}
+            width={Number(formInformation.boxSize)}
             boxNumber={x}
             onBoxClick={() => {
               onBoxClick(x);

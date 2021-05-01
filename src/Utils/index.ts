@@ -37,7 +37,6 @@ export const GetRandomColor = (): string => {
 type TwoDVector = {
   x: number;
   y: number;
-  boxNumber: number;
 };
 export const FormBoxMatrix = (noOfBoxesInRow: number, noOfBoxesInColumn: number) => {
   let boxMatrix: TwoDVector[] = [];
@@ -46,7 +45,7 @@ export const FormBoxMatrix = (noOfBoxesInRow: number, noOfBoxesInColumn: number)
       boxMatrix.push({
         x: j,
         y: i,
-        boxNumber: j + i * noOfBoxesInColumn,
+        // boxNumber: j + i * noOfBoxesInColumn,
       });
     }
   }
@@ -57,10 +56,17 @@ export const GetVectorCoordinate = (
   boxNumber: number,
   noOfBoxesInRow: number,
   noOfBoxesInColumn: number
-) => ({
+): TwoDVector => ({
   x: boxNumber % noOfBoxesInRow,
   y: Math.floor(boxNumber / noOfBoxesInColumn),
 });
+
+export const GetBoxNumberFromVector = (
+  // 22
+  boxvector: TwoDVector, // x: 0, y: 2
+  noOfBoxesInRow: number, // 11
+  noOfBoxesInColumn: number // 9
+) => boxvector.y * noOfBoxesInColumn + boxvector.x;
 
 /**
  * Gets Adjacent Boxes based on current Box
@@ -68,26 +74,39 @@ export const GetVectorCoordinate = (
  * @param noOfBoxesInRow Total Number of Boxes in a row
  * @param noOfBoxesInColumn Total Number of Boxes in a column
  */
-export const GetAdjacentBoxes = (
+export const GetAdjacentMatrices = (
   boxNumber: number,
   noOfBoxesInRow: number,
   noOfBoxesInColumn: number
 ) => {
-  // const formBoxMatrix = FormBoxMatrix(noOfBoxesInRow, noOfBoxesInColumn);
-  // const boxInformation = formBoxMatrix.find((x) => x.boxNumber === boxNumber);
-
   // Get  Box position in Matrix
-  // Get Top, Left, Bottom, Right Boxes
-  // Return the boxes which are valid
+  const currentBox = GetVectorCoordinate(boxNumber, noOfBoxesInRow, noOfBoxesInColumn);
+  // Get Top, Right, Bottom, Left Boxes
+  const adjacentBoxes = [
+    { ...currentBox, y: currentBox.y - 1 }, // above the current box
+    { ...currentBox, x: currentBox.x + 1 }, // right side of current box
+    { ...currentBox, y: currentBox.y + 1 }, // below current box
+    { ...currentBox, x: currentBox.x - 1 }, // left side of current box
+  ];
+  console.debug("adjacentBoxes", adjacentBoxes);
+  // Get the boxes which are valid and are within boundary
+  return adjacentBoxes.filter((matrix: TwoDVector) => {
+    return (
+      matrix.x >= 0 &&
+      matrix.x <= noOfBoxesInRow - 1 &&
+      matrix.y >= 0 &&
+      matrix.y <= noOfBoxesInColumn - 1
+    );
+  });
 
-  const cornerValuesIndexes = [
-    0,
-    noOfBoxesInRow - 1,
-    noOfBoxesInRow * noOfBoxesInColumn - 1,
-    noOfBoxesInRow * noOfBoxesInColumn - noOfBoxesInRow,
-  ]; // Grid corner Numbers [top left, top right, bottom right, bottom left]
+  // const cornerValuesIndexes = [
+  //   0,
+  //   noOfBoxesInRow - 1,
+  //   noOfBoxesInRow * noOfBoxesInColumn - 1,
+  //   noOfBoxesInRow * noOfBoxesInColumn - noOfBoxesInRow,
+  // ]; // Grid corner Numbers [top left, top right, bottom right, bottom left]
 
-  //   console.log("LeftMostColumnLineIndexes", LeftMostColumnLineIndexes);
-  //   console.log("RightMostColumnLineIndexes", RightMostColumnLineIndexes);
-  console.log("cornerValuesIndexes", cornerValuesIndexes);
+  // //   console.log("LeftMostColumnLineIndexes", LeftMostColumnLineIndexes);
+  // //   console.log("RightMostColumnLineIndexes", RightMostColumnLineIndexes);
+  // console.log("cornerValuesIndexes", cornerValuesIndexes);
 };
