@@ -35,30 +35,10 @@ const Box = forwardRef<ColorableRef, BoxProps>(
 
     return (
       <div style={{ width, height, backgroundColor }} onClick={onBoxClick}>
-        <p>{boxNumber}</p>
         {children}
       </div>
     );
   }
 );
-
-// export const Box: React.FC<BoxProps> = (props, ref) => {
-//   const [backgroundColor, setBackgroundColor] = useState<string>(GetRandomColor());
-
-//   const BoxClick = () => {
-//     setBackgroundColor(GetRandomColor());
-//     props.onBoxClick();
-//   };
-
-//   useImperativeHandle(ref, () => ({
-//     changeColor: BoxClick,
-//   }));
-
-//   return (
-//     <div style={{ width: props.width, height: props.height, backgroundColor }} onClick={BoxClick}>
-//       {props.children}
-//     </div>
-//   );
-// };
 
 export default Box;

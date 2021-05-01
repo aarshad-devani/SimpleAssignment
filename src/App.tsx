@@ -23,12 +23,11 @@ export default function App() {
 
   const possibleBoxes = possibleBoxesInHeight * possibleBoxesInWidth;
   const boxRefs = useRef<any>({});
-  boxRefs.current = {};
+  boxRefs.current = {}; // setting it to empty array.. so on each render cycle refs are reset
 
   const GetBoxRef = (boxNumber: string) => boxRefs.current[boxNumber];
   const onBoxClick = (boxNumber: number) => {
     console.log("Box Clicked", boxNumber);
-    console.log("allRefs", boxRefs.current);
     const vectorCoordinate = GetVectorCoordinate(
       boxNumber,
       possibleBoxesInWidth,
@@ -43,7 +42,7 @@ export default function App() {
     const newColor = currentBox && currentBox.changeColor && currentBox.changeColor();
 
     console.log("currentVector", vectorCoordinate);
-    console.log("adjacent", adjacentCoordinates);
+    console.log("adjacentVectors", adjacentCoordinates);
 
     adjacentCoordinates.forEach((matrix) => {
       const adjacentBoxRef = GetBoxRef(`${matrix.x}-${matrix.y}`);
