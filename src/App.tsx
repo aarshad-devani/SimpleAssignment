@@ -1,26 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useRef, useState } from "react";
+import Box from "./Components/Box";
+import "./App.css";
 
-function App() {
+const BOX_HEIGHT = 100;
+const BOX_WIDTH = 100;
+const BOXES = 100;
+
+export default function App() {
+  const [boxNumber] = useState<number>(BOXES);
+  const boxRefs = [...Array(boxNumber).keys()].map((x: number) => useRef<any>());
+
+  const GetAdjacentBoxes = (boxNumber: number) => {};
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="full-Box">
+      {[...Array(100).keys()].map((x: number) => (
+        <Box
+          key={x}
+          height={BOX_HEIGHT}
+          width={BOX_WIDTH}
+          onBoxClick={() => {
+            console.log("Box Clicked", x);
+          }}
+        />
+      ))}
     </div>
   );
 }
-
-export default App;
